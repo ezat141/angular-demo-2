@@ -1,0 +1,36 @@
+<div class="row row-cols-1 row-cols-md-4 g-4">
+  @for (product of filteredProducts; track product.id; let i= $index) {
+    <div class="col" >
+      <div class="card"  appHighlightCard="gray" externalColor="pink">
+        <img [src]="product.imgUrl" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{i+1}} {{product.name}}</h5>
+          <p class="card-text">Price : {{product.price | currency}}</p>
+          @switch (product.quantity) {
+            @case (0) {
+              <p class="card-text">Quantity : Out of Stock</p>
+            }
+            @case (1) {
+              <p class="card-text">Quantity : Last Item</p>
+            }
+            @default {
+              <p class="card-text">Quantity : {{product.quantity}}</p>
+            }
+          }
+          <input type="number" #countInp/>
+          <button class="btn btn-success" (click)="buy(countInp.value, product.price)">buy</button>
+        </div>
+      </div>
+    </div>
+
+  }@empty {
+    <h1>No products found.</h1>
+  }
+</div>
+
+<!-- <h2>{{myDate | date:'shortDate'}}</h2> -->
+
+<!-- <h2>{{num |square:2}}</h2> -->
+
+
+

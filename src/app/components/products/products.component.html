@@ -1,6 +1,6 @@
 <div class="row row-cols-1 row-cols-md-4 g-4">
   @for (product of filteredProducts; track product.id; let i= $index) {
-    <div class="col" >
+    <div class="col">
       <div class="card"  appHighlightCard="gray" externalColor="pink">
         <img [src]="product.imgUrl" class="card-img-top" alt="...">
         <div class="card-body">
@@ -19,6 +19,7 @@
           }
           <input type="number" #countInp/>
           <button class="btn btn-success" (click)="buy(countInp.value, product.price)">buy</button>
+          <button class=" btn btn-success" (click)="navigateToDetails(product.id)">Details</button>
         </div>
       </div>
     </div>

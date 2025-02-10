@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import {CurrencyPipe} from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { HighlightCardDirective } from '../../directives/highlight-card.directive';
+import { StaticProductsService } from '../../services/static-products.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -22,16 +24,8 @@ export class ProductsComponent implements OnChanges{
   // 1- define event
   @Output() onTotalPriceChanged: EventEmitter<number>
   @Input() recievedCatId:number=0;
-  constructor() {
-    this.products =[
-      {id:100,name:"Dell laptop",price:500000,quantity:3,imgUrl:'https://fakeimg.pl/300/',catId:1},
-      {id:200,name:"HP laptop",price:500000,quantity:0,imgUrl:'https://fakeimg.pl/300/',catId:1},
-      {id:300,name:"Iphone",price:3054545,quantity:2,imgUrl:'https://fakeimg.pl/300/',catId:2},
-      {id:400,name:"oppo ",price:60000,quantity:1,imgUrl:'https://fakeimg.pl/300/',catId:2},
-      {id:500,name:"samsung tablet",price:20000,quantity:0,imgUrl:'https://fakeimg.pl/300/',catId:3},
-      {id:600,name:"Lenovo tablet",price:10000,quantity:4,imgUrl:'https://fakeimg.pl/300/',catId:3}
-
-    ]
+  constructor(private _StaticProductsService: StaticProductsService, private router: Router ) {
+    this.products = this._StaticProductsService.getAllProducts();
 
     this.filteredProducts=this.products
 
@@ -39,7 +33,7 @@ export class ProductsComponent implements OnChanges{
 
   }
   ngOnChanges(): void {
-    this.filterProducts();
+    this.filteredProducts = this._StaticProductsService.getProductsByCatId(this.recievedCatId);
 
 
   }
@@ -48,21 +42,27 @@ export class ProductsComponent implements OnChanges{
 
       this.totalOrderPrice += +count * price;
 
+      const product = this.products.find(p => p.price === price && p.quantity > 0);
+      if (product) {
+        product.quantity -= +count;
+      }
+
       // 2-fire event
       this.onTotalPriceChanged.emit(this.totalOrderPrice);
     }
+
+    navigateToDetails(id:number){
+      // this.router.navigateByUrl('/Details/${id}');
+      // Navigate to the product details page with the given id
+      this.router.navigate(['/Details',id])
+
+    }
+
 
     trackItem(index:number, item:Iproduct){
       return item.id;
     }
 
-    filterProducts(){
-      if(this.recievedCatId==0){
-        this.filteredProducts = this.products;
-      } else{
-        this.filteredProducts = this.products.filter(p => p.catId == this.recievedCatId);
-      }
-    }
 
 
 

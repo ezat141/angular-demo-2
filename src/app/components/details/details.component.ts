@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StaticProductsService } from '../../services/static-products.service';
 import { Iproduct } from '../../models/iproduct';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, Location } from '@angular/common';
 
 @Component({
   selector: 'app-details',
@@ -13,12 +13,50 @@ import { CurrencyPipe } from '@angular/common';
 export class DetailsComponent  implements OnInit{
   currentId:number = 0;
   product:Iproduct|null = null;
-  constructor(private _activeRoute:ActivatedRoute, private _StaticProductsService:StaticProductsService){
-
+  idsArr: number[];
+  currentIdIndex:number = 0;
+  constructor(
+    private _activetedRoute:ActivatedRoute,
+    private _StaticProductsService:StaticProductsService,
+    private _Location: Location,
+    private router : Router){
+      this.idsArr=this._StaticProductsService.mapProductsToIds();
   }
   ngOnInit(): void {
-    this.currentId= Number(this._activeRoute.snapshot.paramMap.get('id'))
-    this.product = this._StaticProductsService.getProductById(this.currentId);
+    this._activetedRoute.paramMap.subscribe((paramMap) => {
+      this.currentId = Number(paramMap.get('id'));
+      this.product = this._StaticProductsService.getProductById(this.currentId);
+    });
+    // this.currentId= Number(this._activeRoute.snapshot.paramMap.get('id'))
+    // this.product = this._StaticProductsService.getProductById(this.currentId);
+  }
+
+  goBack(){
+    this._Location.back();
+
+  }
+
+  next(){
+    this.currentIdIndex = this.idsArr.findIndex((id) => id==this.currentId);
+    if(this.currentIdIndex !=this.idsArr.length - 1){
+      this.router.navigateByUrl(`/Details/${this.idsArr[this.currentIdIndex+1]}`);
+    }
+
+
+  }
+
+  prev(){
+    this.currentIdIndex = this.idsArr.findIndex((id)=>id==this.currentId);
+    if(this.currentIdIndex!=0){
+      this.router.navigateByUrl(`/Details/${this.idsArr[this.currentIdIndex-1]}`);
+    }
+
+
   }
 
 }
+
+
+
+
+

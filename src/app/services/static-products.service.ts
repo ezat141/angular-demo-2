@@ -34,5 +34,10 @@ export class StaticProductsService {
     }
   }
 
+  mapProductsToIds():number[]{
+    return this.products.map((prd) => prd.id);
+
+  }
+
 
 }

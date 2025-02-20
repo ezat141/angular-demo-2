@@ -26,4 +26,8 @@ export class UserAuthService {
   getAuthSubject():BehaviorSubject<boolean>{
     return this.authSubject;
   }
+
+  getToken():any{
+    return localStorage.getItem('token');
+  }
 }

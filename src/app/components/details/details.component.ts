@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StaticProductsService } from '../../services/static-products.service';
 import { Iproduct } from '../../models/iproduct';
 import { CurrencyPipe, Location } from '@angular/common';
+import { ApiProductsService } from '../../services/api-products.service';
 
 @Component({
   selector: 'app-details',
@@ -18,6 +19,7 @@ export class DetailsComponent  implements OnInit{
   constructor(
     private _activetedRoute:ActivatedRoute,
     private _StaticProductsService:StaticProductsService,
+    private _ApiProductsService:ApiProductsService,
     private _Location: Location,
     private router : Router){
       this.idsArr=this._StaticProductsService.mapProductsToIds();
@@ -25,7 +27,13 @@ export class DetailsComponent  implements OnInit{
   ngOnInit(): void {
     this._activetedRoute.paramMap.subscribe((paramMap) => {
       this.currentId = Number(paramMap.get('id'));
-      this.product = this._StaticProductsService.getProductById(this.currentId);
+      // this.product = this._StaticProductsService.getProductById(this.currentId);
+      this._ApiProductsService.getProductById(this.currentId).subscribe({
+        next:(res)=>{
+          this.product = res
+        },
+        error:(error)=>console.log(`Error fetching product: ${error}`)
+      })
     });
     // this.currentId= Number(this._activeRoute.snapshot.paramMap.get('id'))
     // this.product = this._StaticProductsService.getProductById(this.currentId);

@@ -1,16 +1,36 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AsyncPipe } from '@angular/common';
+import { decrement, increment } from '../../store/counter/counter.action';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent  {
-  subscribitions!: Subscription
-  constructor(private _NotificationSer:NotificationService){}
+  counter:Observable<number>
+  count!:number
+  // subscribitions!: Subscription
+  constructor(private _NotificationSer:NotificationService, private store:Store<{counter:number}>) {
+    this.counter = this.store.select("counter");
+    // this.counter.subscribe((newVal)=>{
+    //   this.count =newVal;
+
+    // })
+
+  }
+
+  increase(){
+    this.store.dispatch(increment())
+  }
+
+  decrease(){
+    this.store.dispatch(decrement())
+  }
   // ngOnInit(): void {
   //   // this._NotificationSer.getNotifications().subscribe((notification) => {
   //   //   console.log(notification);

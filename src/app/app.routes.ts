@@ -10,13 +10,17 @@ import { LoginComponent } from './components/login/login.component';
 import { authGuard } from './guards/auth.guard';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { OrderComponent } from './components/order/order.component';
+import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'Home', pathMatch: 'full' },
   { path: 'Home',component: HomeComponent},
   { path: 'Login',component: LoginComponent},
-  { path: 'Products',component: OrderComponent, canActivate: [authGuard]},
+  { path: 'Products',
+    loadComponent:()=>import('./components/products/products.component')
+    .then(obj=>obj.ProductsComponent), canActivate: [authGuard]},
   {path:'AddProduct',component: AddProductComponent},
+  {path:'Register',component: RegisterComponent},
   { path: 'Details/:id',component: DetailsComponent},
   {
     path: 'About',
